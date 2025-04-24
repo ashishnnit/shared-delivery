@@ -6,22 +6,26 @@ import { Users } from "lucide-react";
 
 const Sidebar = () => {
     const { 
-        getUsers, 
-        users, 
-        selectedUser, 
-        setSelectedUser, 
-        isUsersLoading,
-        unreadMessages,
-        markMessagesAsRead
+    getUsers, 
+    users, 
+    selectedUser, 
+    setSelectedUser, 
+    isUsersLoading,
+    unreadMessages,
+    markMessagesAsRead,
+    messages
     } = useChatStore();
 
     const { onlineUsers,authUser } = useAuthStore();
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
-    // Fetch users on mount
+    
     useEffect(() => {
-        getUsers();
-    }, [getUsers,unreadMessages]);
+       getUsers();
+      // console.log("Users fetched:", users);
+      
+    }, [getUsers,unreadMessages,messages]);
+  
     
     const filteredUsers = showOnlineOnly
         ? users.filter((user) => onlineUsers.includes(user._id))

@@ -10,6 +10,7 @@ export const useChatStore = create((set, get) => ({
   isUserLoading: false,
   isMessagesLoading: false,
   unreadMessages: {}, // { senderId: unreadCount }
+  totalUnreadUserCount: 0, // Total unread messages count
 
   // Fetch all users with unread counts
   getUsers: async () => {
@@ -20,6 +21,8 @@ export const useChatStore = create((set, get) => ({
       // Transform users to store unread counts
       const users = res.data;
       const unreadMessages = {};
+
+     // console.log("abc");
 
       users.forEach((user) => {
         unreadMessages[user._id] = user.unreadCount || 0;
@@ -76,6 +79,7 @@ export const useChatStore = create((set, get) => ({
         messageData
       );
       set({ messages: [...messages, res.data] });
+
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to send message");
     }
@@ -83,6 +87,9 @@ export const useChatStore = create((set, get) => ({
 
   // Subscribe to new messages and unread updates
   subscribeToNewMessages: () => {
+
+    console.log("subscribing to new messages");
+    
     const { selectedUser,markMessagesAsRead,unreadMessages } = get();
     const { authUser } = useAuthStore.getState();
     const socket = useAuthStore.getState().socket;
@@ -94,14 +101,17 @@ export const useChatStore = create((set, get) => ({
     socket.on("newMessage", (newMessage) => {
 
       if (newMessage.senderId !== selectedUser._id) return;
+
       socket.emit("markMessagesAsRead", {
         senderId :authUser._id,
         userId: newMessage.senderId,
       });
+
       markMessagesAsRead(newMessage.senderId);
   
       console.log(unreadMessages[newMessage.senderId]);
       set({
+        
         messages: [...get().messages, newMessage],
       });
     });
@@ -143,4 +153,22 @@ export const useChatStore = create((set, get) => ({
     }
     console.log("unreadMessages",unreadMessages[senderId]);
   },
+
+  calculateTotalUnread: () => {
+    const { unreadMessages } = get();
+    let total = 0;
+    
+    // Iterate through all senderIds in unreadMessages
+    Object.values(unreadMessages).forEach(count => {
+      if (count > 0) {
+        total += 1;
+      }
+    });
+    
+    // Update the totalUnreadCount in state
+
+    set({ totalUnreadUserCount: total });
+  },
+
+  //subscribe to global message
 }));

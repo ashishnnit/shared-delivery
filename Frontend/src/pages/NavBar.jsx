@@ -1,13 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, LogOut, FileText, Plus, MessageCircle } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
+import { useChatStore } from "../store/useChatStore";
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { logout } = useAuthStore();
+  const {totalUnreadUserCount,unreadMessages,calculateTotalUnread,messages} = useChatStore();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+
+    calculateTotalUnread();
+  //  console.log("Total unread messages:", totalUnreadUserCount);
+   // console.log(Object.values(unreadMessages).join(","));
+    
+  }, [messages, Object.values(unreadMessages).join(",")]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -102,11 +112,17 @@ const NavBar = () => {
 
           {/* Messenger Button (Far Right) */}
           <button
-            onClick={handleMessengerClick}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
-          >
-            <MessageCircle className="h-6 w-6 text-blue-500" />
-          </button>
+      onClick={handleMessengerClick}
+      className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none relative"
+    >
+      <MessageCircle className="h-6 w-6 text-blue-500" />
+      {totalUnreadUserCount > 0 && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {totalUnreadUserCount > 9 ? '9+' : totalUnreadUserCount}
+        </span>
+      )}
+    </button>
+
         </div>
       </div>
     </nav>

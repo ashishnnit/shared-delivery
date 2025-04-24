@@ -15,7 +15,7 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.fullName || !formData.email || !formData.password) {
       toast.error("Please fill in all fields.");
       return;
     }

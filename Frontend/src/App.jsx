@@ -14,10 +14,12 @@ import EditPostPage from './pages/EditPostPage';
 import NavBar from "./pages/NavBar";
 import PostMapPage from "./pages/PostMapPage";
 import ChatPage from "./pages/ChatPage";
+import { useChatStore } from './store/useChatStore';
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
 
+  
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);

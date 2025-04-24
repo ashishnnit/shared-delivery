@@ -9,6 +9,20 @@ const HomePage = () => {
   const { posts, filteredPosts, getAllPosts } = usePostStore();
   const navigate = useNavigate();
   const {getUserFromId } = useChatStore();
+  
+  const { 
+    getUsers, 
+    unreadMessages,
+    messages
+} = useChatStore();
+
+// kaam chalau code for home page number of message count
+
+useEffect(() => {
+  getUsers();
+}, [getUsers,unreadMessages,messages]);
+
+// Khatam
 
   // Fetch posts on component mount
   useEffect(() => {
