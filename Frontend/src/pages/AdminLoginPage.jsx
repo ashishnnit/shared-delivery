@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -10,8 +10,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const { login, isLoggingIn } = useAuthStore();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { loginAdmin, isLoggingIn } = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,25 +18,11 @@ const LoginPage = () => {
       toast.error("Please fill in all fields.");
       return;
     }
-    await login(formData);
-  };
-
-  const handleAdminLogin = () => {
-    navigate("/adminLogin"); // Navigate to the AdminLogin page
+    await loginAdmin(formData);
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 relative">
-      {/* Admin Login Button */}
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={handleAdminLogin}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-        >
-          Login as Admin
-        </button>
-      </div>
-
+    <div className="h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50">
       <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 transform transition-all duration-500 hover:scale-105">
         {/* Logo and Heading */}
         <div className="text-center mb-8">
@@ -113,16 +98,7 @@ const LoginPage = () => {
             )}
           </button>
         </form>
-
-        {/* Link to Signup Page */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Don&apos;t have an account?{" "}
-            <Link to="/signup" className="text-purple-500 hover:underline hover:text-purple-600 transition-colors">
-              Create account
-            </Link>
-          </p>
-        </div>
+       
       </div>
     </div>
   );

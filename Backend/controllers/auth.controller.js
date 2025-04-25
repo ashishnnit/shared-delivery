@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Admin from "../models/admin.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
 
@@ -36,7 +37,6 @@ export const signup=async (req, res) => {
                     _id:newUser._id,
                     fullName:newUser.fullName,
                     email:newUser.email,
-                    profilePic:newUser.profilePic,
              });
 
         }else{
@@ -53,7 +53,6 @@ export const login= async (req, res) => {
     const {email,password}=req.body;
     try{
       const user=await User.findOne({email});
-      console.log("hi");
 
         if(!user){
             return res.status(400).json({message:"Invalid credentials"});
@@ -71,6 +70,36 @@ export const login= async (req, res) => {
             _id:user._id,
             fullName:user.fullName,
             email:user.email,
+       });
+
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json({message:"Internal Server  Error"});
+    }
+}
+
+export const loginAdmin= async (req, res) => {
+    const {email,password}=req.body;
+    console.log("admin login backend")
+    try{
+      const admin=await Admin.findOne({email});
+
+        if(!admin){
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+
+       const isPasswordCorrect= await bcrypt.compare(password,admin.password);
+
+       if(!isPasswordCorrect){
+            return res.status(400).json({message:"Invalid credentials"});
+       }
+
+       generateToken(admin._id,res);
+
+       res.status(200).json({
+            _id:admin._id,
+            fullName:admin.fullName,
+            email:admin.email,
        });
 
     }catch(err){
@@ -98,3 +127,12 @@ export const checkAuth=(req, res) => {
     res.status(500).json({message:"Internal Server  Error"});
    }
 }
+
+export const checkAuthAdmin=(req, res) => {
+    try {
+      res.status(200).json(req.user);
+    } catch (error) {
+     console.log("Error in checkAuth controller",error.message);
+     res.status(500).json({message:"Internal Server  Error"});
+    }
+ }

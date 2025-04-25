@@ -20,15 +20,24 @@ const ShowMyPosts = () => {
       await getPostById(postId); // Fetch post data by ID
       navigate(`/editPost/${postId}`); // Redirect to the editPost route with the post ID
     } catch (error) {
-      console.error("Failed to fetch post data:", error);
+      if (error.response?.status === 404) {
+        getMyPosts(); // Refresh the posts to remove the deleted one
+      }
     }
   };
 
   // Handle Delete Button Click
   const handleDelete = async (postId) => {
-   await deleteMyPost(postId); // Delete post by ID
-   navigate("/myPosts");
-
+    try {
+      await deleteMyPost(postId); // Delete post by ID
+      getMyPosts(); // Refresh the posts after deletion
+    } catch (error) {
+      if (error.response?.status === 404) {
+        getMyPosts(); // Refresh the posts to remove the deleted one
+      } else {
+        toast.error("Failed to delete post.");
+      }
+    }
   };
 
   return (

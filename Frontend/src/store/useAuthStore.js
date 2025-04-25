@@ -12,11 +12,13 @@ export const useAuthStore = create((set,get) => ({
     isCheckingAuth:true,
     onlineUsers:[],
     socket:null,
+    authAdmin:null,
 
     checkAuth:async()=>{
         try {
             const res=await axiosInstance.get("/auth/check");
             set({authUser:res.data})
+
             get().connectSocket();
 
         } catch (error) {
@@ -26,6 +28,22 @@ export const useAuthStore = create((set,get) => ({
             set({isCheckingAuth:false})
         }
     },
+
+    checkAuthAdmin:async()=>{
+        try {
+            const res=await axiosInstance.get("/auth/checkAdmin");
+            set({authAdmin:res.data})
+
+            get().connectSocket();
+
+        } catch (error) {
+            console.log("Error while checking auth");
+            set({isCheckingAuth:false})
+        } finally{
+            set({isCheckingAuth:false})
+        }
+    },
+
 
     signup:async (data)=>{
         set ({isSigningUp:true});
@@ -48,6 +66,7 @@ export const useAuthStore = create((set,get) => ({
         try {
             await axiosInstance.post("/auth/logout");
             set({authUser:null});
+            set({authAdmin:null});
             toast.success("Logged out successfully ");
 
             get().disconnectSocket();
@@ -63,6 +82,22 @@ export const useAuthStore = create((set,get) => ({
         try {
             const res=await axiosInstance.post("/auth/login",data);
             set({authUser:res.data});
+            toast.success("Logged in successfully");
+
+            get().connectSocket();
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }finally{
+            set({isLoggingIn:false});
+        }
+    },
+
+    loginAdmin:async(data)=>{
+        set({isLoggingIn:true});
+        try {
+            const res=await axiosInstance.post("/auth/loginAdmin",data);
+            set({authAdmin:res.data});
             toast.success("Logged in successfully");
 
             get().connectSocket();

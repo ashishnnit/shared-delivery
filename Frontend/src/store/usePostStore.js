@@ -6,6 +6,7 @@ const BASE_URL = "http://localhost:5002";
 
 export const usePostStore = create((set, get) => ({
   posts: [],
+  adminPosts:[],
   myPosts: [],
   editedPost: null,
   filteredPosts: [],
@@ -31,6 +32,16 @@ export const usePostStore = create((set, get) => ({
     }
   },
 
+  getAllPostsForAdmin: async () => {
+    try {
+      const res = await axiosInstance.get("/posts/getAllPostsForAdmin");
+      set({ adminPosts: res.data, filteredPosts: res.data }); // Initialize filteredPosts with all posts
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+
+
   getMyPosts: async () => {
     try {
       const res = await axiosInstance.get("/posts/getMyPosts");
@@ -51,11 +62,15 @@ export const usePostStore = create((set, get) => ({
   getPostById: async (id) => {
     try {
       const res = await axiosInstance.get(`posts/${id}`);
-      console.log("this is in store", res.data);
       set({ editedPost: res.data });
-      console.log("this is in editPost ", get().editedPost);
     } catch (error) {
-      toast.error(error.response.data.message);
+      if (error.response?.status === 404) {
+        toast.error("This post is no longer available.");
+        get().getMyPosts(); // Refresh the user's posts
+      } else {
+        toast.error(error.response?.data?.message || "Failed to fetch post.");
+      }
+      throw error; // Rethrow the error to handle it in the component
     }
   },
 
@@ -63,13 +78,39 @@ export const usePostStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post(`posts/deleteMyPost/${id}`);
       set((state) => ({
-        myPosts: state.myPosts.filter((post) => post._id !== id),
+        myPosts: state.myPosts.filter((post) => post._id !== id), // Remove the deleted post from the state
       }));
-      console.log("this is in store", res.data);
+      toast.success(res.data.message || "Post deleted successfully!");
     } catch (error) {
-      console.log(error.response.data.message);
+      if (error.response?.status === 404) {
+        toast.error("This post is no longer available.");
+        get().getMyPosts(); // Refresh the user's posts to remove the deleted one
+      } else {
+        toast.error(error.response?.data?.message || "Failed to delete post.");
+      }
+      throw error; // Rethrow the error to handle it in the component
     }
   },
+
+  deletePostForAdmin: async (id) => {
+    try {
+      const res = await axiosInstance.post(`posts/deletePostForAdmin/${id}`);
+      set((state) => ({
+        adminPosts: state.adminPosts.filter((post) => post._id !== id), // Remove the deleted post from the state
+      }));
+      toast.success(res.data.message || "Post deleted successfully!");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("This post is no longer available.");
+        get().getAllPostsForAdmin(); // Refresh the admin's posts to remove the deleted one
+      } else {
+        toast.error(error.response?.data?.message || "Failed to delete post.");
+      }
+      throw error; // Rethrow the error to handle it in the component
+    }
+  },
+
+
 
   // Apply filters to posts
   applyFilters: (filters) => {

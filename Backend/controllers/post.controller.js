@@ -70,6 +70,21 @@ export const getAllPosts=async (req, res) => {
     
 }
 
+export const getAllPostsForAdmin=async (req, res) => {
+  try {
+      const posts = await Post.find(); 
+      if (posts.length > 0) {
+          res.status(200).json(posts);
+      } else {
+          return res.status(404).json({ message: "No posts found" });
+      }
+  } catch (error) {
+      console.log("Error in getPosts controller", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+  
+}
+
 export const editMyPost = async (req, res) => {
     const { id } = req.params;  // Extract post ID from URL
     const { website, amount } = req.body;  // Extract new values
@@ -110,6 +125,23 @@ export const deleteMyPost = async (req, res) => {
         console.log("Error in deleteMyPost controller", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
+};
+
+export const deletePostForAdmin = async (req, res) => {
+  try {
+      const { id } = req.params; // Extract post ID from URL
+
+      const deletedPost = await Post.findByIdAndDelete(id);
+
+      if (!deletedPost) {
+          return res.status(404).json({ message: "Post not found" });
+      }
+
+      res.status(200).json({ message: "Post deleted successfully"});
+  } catch (error) {
+      console.log("Error in deleteMyPost controller", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const getPostById = async (req, res) => {
