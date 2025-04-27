@@ -44,7 +44,6 @@ export const useAuthStore = create((set,get) => ({
         }
     },
 
-
     signup:async (data)=>{
         set ({isSigningUp:true});
         try {
@@ -106,6 +105,26 @@ export const useAuthStore = create((set,get) => ({
             toast.error(error.response.data.message);
         }finally{
             set({isLoggingIn:false});
+        }
+    },
+
+    forgotPassword:async(data)=>{
+        try {
+            const res=await axiosInstance.post("/auth/forgot-password",data);
+            toast.success("Password reset link sent to your email");
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    },
+     
+    resetPassword:async(data)=>{
+        try {
+            const res=await axiosInstance.post("/auth/reset-password",data);
+            toast.success("Password reset successfully now login again");
+
+        } catch (error) {
+            toast.error(error.response.data.message);
         }
     },
 

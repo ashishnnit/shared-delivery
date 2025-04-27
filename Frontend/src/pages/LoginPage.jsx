@@ -122,6 +122,11 @@ const LoginPage = () => {
               Create account
             </Link>
           </p>
+          <p className="mt-2">
+            <Link to="/forgot-password" className="text-purple-500 hover:underline hover:text-purple-600 transition-colors">
+              Forgot Password?
+            </Link>
+          </p>
         </div>
       </div>
     </div>

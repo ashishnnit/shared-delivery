@@ -3,6 +3,8 @@ import Admin from "../models/admin.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
 import { sendEmail } from "../lib/utils.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 export const signup=async (req, res) => {
     const {fullName,email,password}=req.body;
@@ -138,3 +140,60 @@ export const checkAuthAdmin=(req, res) => {
      res.status(500).json({message:"Internal Server  Error"});
     }
  }
+
+export const forgotPassword=async (req,res) => {
+    const {email} = req.body;
+    console.log(email);
+    
+    try {
+        const user = await User.findOne({ email });
+
+
+        if(user){
+            const resetToken = jwt.sign(
+                { id: user._id },
+                process.env.JWT_FORGET_PASSWORD_SECRET,
+                { expiresIn: "15m" }
+              );
+
+            
+            const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+            
+            await sendEmail(
+                email,
+                "Password Reset Request",
+                `<h1>Password Reset Request</h1><p>Click <a href="${resetUrl}">${resetUrl}</a> to reset your password.</p>`
+              );
+
+            res.status(200).json({message:"Email sent successfully"});
+
+        } else {
+            return res.status(400).json({message:"User not found"});
+        }
+    } catch (error) {
+        console.log("Error in forgotPassword controller",error.message);
+        res.status(500).json({message:"Internal Server  Error"});
+        
+}
+}
+
+export const resetPassword = async(req, res) => {
+    const { password, token } = req.body;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_FORGET_PASSWORD_SECRET);
+        const userId = decoded.id;
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        await User.findByIdAndUpdate(userId, { password: hashedPassword });
+        
+
+         // Optionally, you can log the user out after resetting the password
+         res.cookie("jwt", "", { maxAge: 0 });
+        res.status(200).json({ message: "Password reset successfully" });
+    } catch (error) {
+        console.log("Error in resetPassword controller", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

@@ -17,6 +17,8 @@ import ChatPage from "./pages/ChatPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminPage from "./pages/AdminPage";
 import { useChatStore } from "./store/useChatStore";
+import ForgotPassPage from "./pages/ForgotPassPage";
+import ResetPassPage from "./pages/ResetPassPage";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, authAdmin, checkAuthAdmin } =
@@ -118,6 +120,16 @@ const App = () => {
                 <Navigate to="/login" />
               )
             }
+          />
+
+         <Route
+            path="/forgot-password"
+            element={ < ForgotPassPage/>}
+          />
+
+         <Route
+            path="/reset-password/:token"
+            element={ < ResetPassPage/>}
           />
 
         </Routes>

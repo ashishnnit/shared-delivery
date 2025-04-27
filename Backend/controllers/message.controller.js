@@ -144,6 +144,7 @@ export const sendMessage = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 export const userFromId = async (req, res) => {
     try {
         const { id } = req.params;
