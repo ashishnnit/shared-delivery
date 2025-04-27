@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import Admin from "../models/admin.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
+import { sendEmail } from "../lib/utils.js";
 
 export const signup=async (req, res) => {
     const {fullName,email,password}=req.body;
@@ -31,6 +32,7 @@ export const signup=async (req, res) => {
         if(newUser){
              // Generate jwt token
              generateToken(newUser._id,res);
+             await sendEmail(email,"Welcome to Shared Delivery","<h1>Welcome to Shared Delivery</h1><p>We are glad to have you on board.</p>");
              await newUser.save();
 
              res.status(201).json({
