@@ -18,9 +18,6 @@ const HomePage = () => {
 
 // kaam chalau code for home page number of message count
 
-useEffect(() => {
-  getUsers();
-}, [getUsers,unreadMessages,messages]);
 
 // Khatam
 

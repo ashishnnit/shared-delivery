@@ -21,10 +21,8 @@ const Sidebar = () => {
 
     
     useEffect(() => {
-       getUsers();
-      // console.log("Users fetched:", users);
-      
-    }, [getUsers,unreadMessages,messages]);
+       getUsers();  
+    }, [getUsers,JSON.stringify(unreadMessages),messages]);
   
     
     const filteredUsers = showOnlineOnly

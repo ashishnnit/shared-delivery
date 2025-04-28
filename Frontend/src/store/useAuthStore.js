@@ -2,6 +2,7 @@ import {create} from "zustand";
 import {axiosInstance} from "../lib/axios.js";
 import toast from "react-hot-toast";
 import {io} from "socket.io-client";
+import {useChatStore} from "./useChatStore.js";
 
 const BASE_URL="http://localhost:5002";
 
@@ -84,6 +85,7 @@ export const useAuthStore = create((set,get) => ({
             toast.success("Logged in successfully");
 
             get().connectSocket();
+            
 
         } catch (error) {
             toast.error(error.response.data.message);
@@ -144,6 +146,12 @@ export const useAuthStore = create((set,get) => ({
         socket.on("getOnlineUsers",(userIds)=>{
             set({onlineUsers:userIds});
         });
+
+        // calling subscribeToNewMessages from chatStore
+        const { subscribeToNewMessages } = useChatStore.getState();
+
+        subscribeToNewMessages();
+
      },
  
      disconnectSocket:()=>{

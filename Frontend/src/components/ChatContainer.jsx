@@ -14,8 +14,7 @@ const ChatContainer = () => {
         selectedUser,
         subscribeToNewMessages,
         unsubscribeFromMessages,
-        markMessagesAsRead,
-        unreadMessages,
+       
     } = useChatStore();
 
     const { authUser, socket, connectSocket } = useAuthStore();
@@ -33,6 +32,8 @@ const ChatContainer = () => {
         return () => {
             // Clean up subscriptions when component unmounts or selectedUser changes
             unsubscribeFromMessages();
+            
+            subscribeToNewMessages();
             
         };
     }, [selectedUser?._id, socket, getMessages, subscribeToNewMessages, unsubscribeFromMessages, connectSocket]);

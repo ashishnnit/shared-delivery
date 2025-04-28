@@ -90,17 +90,33 @@ export const useChatStore = create((set, get) => ({
 
     console.log("subscribing to new messages");
     
-    const { selectedUser,markMessagesAsRead,unreadMessages } = get();
+    const { selectedUser,markMessagesAsRead,unreadMessages,getUsers } = get();
     const { authUser } = useAuthStore.getState();
     const socket = useAuthStore.getState().socket;
 
-    if (!selectedUser) return;
+    //if (!selectedUser) return; 
+
+    // Remove any existing listener to avoid duplicates
+    
+    socket.off("newMessage");
+
+    
+    socket.on("newMessage", (newMessage) => {
     
 
+      if (!authUser) {
+        console.error("authUser is null, skipping message processing");
+        return;
+    }
 
-    socket.on("newMessage", (newMessage) => {
+     console.log("New message received:", newMessage);
+      if(newMessage.receiverId === authUser._id &&  !selectedUser){
+       getUsers();
+        return;
+     }
+    
 
-      if (newMessage.senderId !== selectedUser._id) return;
+     if (!selectedUser) return;
 
       socket.emit("markMessagesAsRead", {
         senderId :authUser._id,
@@ -111,7 +127,6 @@ export const useChatStore = create((set, get) => ({
   
       console.log(unreadMessages[newMessage.senderId]);
       set({
-        
         messages: [...get().messages, newMessage],
       });
     });

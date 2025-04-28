@@ -14,10 +14,8 @@ const NavBar = () => {
   useEffect(() => {
 
     calculateTotalUnread();
-  //  console.log("Total unread messages:", totalUnreadUserCount);
-   // console.log(Object.values(unreadMessages).join(","));
     
-  }, [messages, Object.values(unreadMessages).join(",")]);
+  }, [messages, JSON.stringify(unreadMessages)]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
