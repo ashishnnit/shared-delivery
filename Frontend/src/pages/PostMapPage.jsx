@@ -62,7 +62,7 @@ const PostMapPage = () => {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col">
+    <div className="h-screen w-screen flex flex-col z-0">
       {/* Distance Display on Top */}
       <div className="bg-white text-center py-4 shadow-md">
         <p className="text-gray-700 text-lg font-semibold">Distance: {distance}</p>

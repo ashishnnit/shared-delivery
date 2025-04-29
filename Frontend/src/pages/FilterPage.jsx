@@ -46,7 +46,7 @@ const FilterPage = () => {
           placeholder="Enter website name"
           value={filters.website}
           onChange={handleFilterChange} // Trigger on change
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-sky-100 text-black placeholder-gray-400"
         />
       </div>
 
@@ -62,7 +62,7 @@ const FilterPage = () => {
             placeholder="Min"
             value={filters.minAmount}
             onChange={handleFilterChange} // Trigger on change
-            className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-sky-100 text-black placeholder-gray-400"
           />
           <input
             type="number"
@@ -70,7 +70,7 @@ const FilterPage = () => {
             placeholder="Max"
             value={filters.maxAmount}
             onChange={handleFilterChange} // Trigger on change
-            className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-sky-100 text-black placeholder-gray-400"
           />
         </div>
       </div>
@@ -86,7 +86,7 @@ const FilterPage = () => {
           placeholder="Enter max distance"
           value={filters.distance}
           onChange={handleFilterChange} // Trigger on change
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-sky-100 text-black placeholder-gray-400"
         />
       </div>
 

@@ -27,9 +27,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 relative">
+    <div className=" fixed inset-0 flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 ">
       {/* Admin Login Button */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-20 right-4">
         <button
           onClick={handleAdminLogin}
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
@@ -61,7 +61,7 @@ const LoginPage = () => {
               </div>
               <input
                 type="email"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-sky-100 text-black"
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -78,7 +78,7 @@ const LoginPage = () => {
               </div>
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-sky-100 text-black"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}

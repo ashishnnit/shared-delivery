@@ -28,7 +28,6 @@ const NavBar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      console.log("Logged out successfully ho gya");
       closeDropdown();
       navigate("/login");
     } catch (error) {

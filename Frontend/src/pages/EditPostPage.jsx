@@ -51,7 +51,7 @@ const EditPostPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
+    <div className=" fixed inset-0 flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center text-purple-600 mb-6">
           Edit Post
@@ -70,7 +70,7 @@ const EditPostPage = () => {
               placeholder={editedPost.post.website}
               value={formData.website}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+              className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-sky-100 text-black"
               required
             />
           </div>
@@ -86,7 +86,7 @@ const EditPostPage = () => {
               placeholder={editedPost.post.amount}
               value={formData.amount}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+              className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-sky-100 text-black"
               required
             />
           </div>
