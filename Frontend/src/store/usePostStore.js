@@ -10,6 +10,8 @@ export const usePostStore = create((set, get) => ({
   myPosts: [],
   editedPost: null,
   filteredPosts: [],
+  suspeciousPosts:[],
+  usersPostForAdmin:[],
 
   // Create a new post
   createPost: async (data) => {
@@ -40,7 +42,6 @@ export const usePostStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
-
 
   getMyPosts: async () => {
     try {
@@ -110,8 +111,6 @@ export const usePostStore = create((set, get) => ({
     }
   },
 
-
-
   // Apply filters to posts
   applyFilters: (filters) => {
     const { posts } = get();
@@ -177,4 +176,60 @@ export const usePostStore = create((set, get) => ({
 
   // Convert degrees to radians
   toRadians: (degrees) => degrees * (Math.PI / 180),
+
+  handleReportPost: async (postId,userId) => {
+    try {
+      // Call the backend API to report the post
+      const response = await axiosInstance.post(`/posts/report/${postId}`);
+      toast.success("Post reported successfully!");
+
+      // Update the posts in state to reflect the change
+      set((state) => ({
+        posts: state.posts.map((p) =>
+          p._id === postId ? { ...p, reports: [...p.reports, userId] } : p
+        ),
+        filteredPosts: state.filteredPosts.map((p) =>
+          p._id === postId ? { ...p, reports: [...p.reports, userId] } : p
+        ),
+      }));
+    } catch (error) {
+      toast.error("Failed to report the post.");
+    }
+  },
+
+  getSuspeciousPosts: async () => {
+    try {
+      const res = await axiosInstance.get("/posts/suspeciousPosts");
+      set({ suspeciousPosts: res.data });
+    } catch (error) {
+      toast.error("No route found for this request.");
+    }
+  },
+
+  seeUserProfile: async (userId) => {
+    try {
+      const res = await axiosInstance.get(`/posts/userProfileForAdmin/${userId}`);
+      set({ usersPostForAdmin: res.data });
+    } catch (error) {
+      toast.error("No route found for this request.");
+    }
+  },
+  
+  deleteUserForAdmin: async (userId) => {
+    try {
+      const res = await axiosInstance.post(`/posts/deleteUserForAdmin/${userId}`);
+      toast.success("User account deleted successfully!");
+
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("This user account is no longer available.");
+        get().seeUserProfile(userId); // Refresh the user's profile to remove the deleted one
+      } else {
+        toast.error(error.response?.data?.message || "Failed to delete user account.");
+      }
+    }finally {
+      get().getSuspeciousPosts(); // Refresh the suspicious posts list
+    }
+  },
+
 }));

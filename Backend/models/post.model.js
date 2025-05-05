@@ -26,6 +26,10 @@ const postSchema = new mongoose.Schema(
         type: Number, // Add latitude field
         required: true, // Make it required if you want every post to have a location
       },
+      reports: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'  // Assuming there is a 'User' model for reference
+      }],
     },
     { timestamps: true }
   );

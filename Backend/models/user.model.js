@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
             required:true,
             minlength:6,
         },
+        reports:{
+            type:Number,
+            default:0,
+        }
       
     },
     {timestamps:true}

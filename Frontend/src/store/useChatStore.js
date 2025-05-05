@@ -2,6 +2,8 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
 import { useAuthStore } from "./useAuthStore.js";
+import { usePostStore } from "./usePostStore.js";
+import { io } from "socket.io-client";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -94,10 +96,7 @@ export const useChatStore = create((set, get) => ({
     const { authUser } = useAuthStore.getState();
     const socket = useAuthStore.getState().socket;
 
-    //if (!selectedUser) return; 
-
     // Remove any existing listener to avoid duplicates
-    
     socket.off("newMessage");
 
     
@@ -130,6 +129,11 @@ export const useChatStore = create((set, get) => ({
         messages: [...get().messages, newMessage],
       });
     });
+  
+    socket.on("postsUpdated", (newPost) => {
+        const {getAllPosts} = usePostStore.getState();
+        getAllPosts(); 
+     }); 
 
   },
 

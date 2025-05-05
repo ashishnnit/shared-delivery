@@ -1,40 +1,62 @@
 import React, { useEffect } from "react";
 import { usePostStore } from "../store/usePostStore";
 import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import FilterPage from "./FilterPage";
-import { FaMapMarkerAlt } from "react-icons/fa"; // Import location marker icon
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 const HomePage = () => {
-  const { posts, filteredPosts, getAllPosts } = usePostStore();
+  const { filteredPosts, getAllPosts, handleReportPost,getPostById } = usePostStore();
+  const { authUser } = useAuthStore();
   const navigate = useNavigate();
-  const {getUserFromId } = useChatStore();
-  
-  const { 
-    getUsers, 
+
+  const {
+    getUserFromId,
+    getUsers,
     unreadMessages,
-    messages
-} = useChatStore();
+    messages,
+  } = useChatStore();
 
-// kaam chalau code for home page number of message count
-
-
-// Khatam
-
-  // Fetch posts on component mount
   useEffect(() => {
     getAllPosts();
   }, [getAllPosts]);
 
-  // Navigate to the map page with post data
-  const handleViewOnMap = (post) => {
-    navigate("/post-map", { state: { post } });
+  const handleViewOnMap = async (post) => {
+    try {
+      await getPostById(post._id);
+      navigate("/post-map", { state: { post } });
+    } catch (error) {
+      if (error.response?.status === 404) {
+        getAllPosts();
+      }
+    }
+   
   };
 
-  // Navigate to the chat page
-  const handleStartChatting = async (user_id) => {
-    await getUserFromId(user_id);
-    navigate("/chatPage"); // Redirect to the home or chat route
+  const handleStartChatting = async (user_id,postId) => {
+    try {
+      await getPostById(postId);
+      await getUserFromId(user_id);
+      navigate("/chatPage");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        getAllPosts();
+      }
+    }
+    
+  };
+
+  const reportPost = async (postId, userId) => {
+    try {
+      await getPostById(postId);
+      await handleReportPost(postId, userId);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        getAllPosts();
+      }
+    }
+    
   };
 
   return (
@@ -61,29 +83,43 @@ const HomePage = () => {
                     <span className="font-medium text-purple-600">Website:</span>{" "}
                     <span className="text-gray-900">{post.website}</span>
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 mb-2">
                     <span className="font-medium text-purple-600">Amount:</span>{" "}
                     <span className="text-gray-900">${post.amount}</span>
+                  </p>
+                  <p className="text-gray-700">
+                    <span className="font-medium text-red-500">Reports:</span>{" "}
+                    <span className="text-gray-900">{post.reports?.length || 0}</span>
                   </p>
                 </div>
 
                 {/* Buttons Container */}
-                <div className="flex flex-col space-y-2">
-                  {/* View on Map Button */}
+                <div className="flex flex-col space-y-2 items-end">
                   <button
                     onClick={() => handleViewOnMap(post)}
-                    className="flex items-center px-3 py-1.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm"
+                    className="w-36 flex items-center px-3 py-1.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm"
                   >
-                    <FaMapMarkerAlt className="mr-2" /> {/* Location marker icon */}
+                    <FaMapMarkerAlt className="mr-2" />
                     View on Map
                   </button>
 
-                  {/* Start Chatting Button */}
                   <button
-                    onClick={() => handleStartChatting(post.user_id)}
-                    className="flex items-center px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm"
+                    onClick={() => handleStartChatting(post.user_id,post._id)}
+                    className="w-36 px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm"
                   >
                     Start Chatting
+                  </button>
+
+                  <button
+                    onClick={() => reportPost(post._id, authUser._id)}
+                    disabled={post.reports.includes(authUser._id)}
+                    className={`w-36 px-3 py-1.5 rounded-lg text-sm ${
+                      post.reports.includes(authUser._id)
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-red-500 hover:bg-red-600 text-white"
+                    }`}
+                  >
+                    {post.reports.includes(authUser._id) ? "Reported" : "Report"}
                   </button>
                 </div>
               </div>

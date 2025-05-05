@@ -7,7 +7,7 @@ import CreatePostPage from "./pages/CreatePostPage";
 import { Loader } from "lucide-react";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Router,Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import ShowMyPosts from "./pages/ShowMyPosts";
 import EditPostPage from "./pages/EditPostPage";
@@ -19,6 +19,8 @@ import AdminPage from "./pages/AdminPage";
 import { useChatStore } from "./store/useChatStore";
 import ForgotPassPage from "./pages/ForgotPassPage";
 import ResetPassPage from "./pages/ResetPassPage";
+import AdminSuspeciousPost from "./pages/AdminSuspeciousPost";
+import UserProfileForAdmin from "./pages/UserProfileForAdmin";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, authAdmin, checkAuthAdmin } =
@@ -51,9 +53,20 @@ const App = () => {
           />
 
           <Route
+            path="/suspicious-posts"
+            element={authAdmin ? <AdminSuspeciousPost /> : <Navigate to="/adminLogin" />}
+          />
+
+          <Route
             path="/adminDashboard"
             element={authAdmin ? <AdminPage /> : <Navigate to="/adminLogin" />}
           />
+
+          <Route 
+            path="/userProfileForAdmin/:id" 
+            element={authAdmin ? <UserProfileForAdmin /> : <Navigate to="/adminLogin" />} />
+
+
 
           <Route
             path="/signup"
@@ -75,6 +88,7 @@ const App = () => {
               )
             }
           />
+
 
           <Route
             path="/createPost"
