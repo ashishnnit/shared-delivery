@@ -109,13 +109,21 @@ export const useChatStore = create((set, get) => ({
     }
 
      console.log("New message received:", newMessage);
+
       if(newMessage.receiverId === authUser._id &&  !selectedUser){
        getUsers();
         return;
      }
-    
 
+     console.log("selectedUser",selectedUser);
+     console.log("newMessage.senderId",newMessage.senderId);
+     if(selectedUser._id !==newMessage.senderId){
+      getUsers();
+      return;
+     }
+    
      if (!selectedUser) return;
+ 
 
       socket.emit("markMessagesAsRead", {
         senderId :authUser._id,
@@ -125,6 +133,7 @@ export const useChatStore = create((set, get) => ({
       markMessagesAsRead(newMessage.senderId);
   
       console.log(unreadMessages[newMessage.senderId]);
+
       set({
         messages: [...get().messages, newMessage],
       });
