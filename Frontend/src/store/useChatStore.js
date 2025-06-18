@@ -108,32 +108,24 @@ export const useChatStore = create((set, get) => ({
         return;
     }
 
-     console.log("New message received:", newMessage);
-
       if(newMessage.receiverId === authUser._id &&  !selectedUser){
        getUsers();
         return;
      }
 
-     console.log("selectedUser",selectedUser);
-     console.log("newMessage.senderId",newMessage.senderId);
      if(selectedUser._id !==newMessage.senderId){
       getUsers();
       return;
      }
     
      if (!selectedUser) return;
- 
 
-      socket.emit("markMessagesAsRead", {
-        senderId :authUser._id,
-        userId: newMessage.senderId,
-      });
+     console.log("newMessage.senderId",newMessage.senderId);
+       
+     // setting unread count to 0 for the senderId and updating local state
+      markMessagesAsRead(newMessage.senderId); 
 
-      markMessagesAsRead(newMessage.senderId);
-  
-      console.log(unreadMessages[newMessage.senderId]);
-
+      // Update unread messages count
       set({
         messages: [...get().messages, newMessage],
       });
@@ -144,6 +136,29 @@ export const useChatStore = create((set, get) => ({
         getAllPosts(); 
      }); 
 
+  },
+
+   // Mark messages as read
+   markMessagesAsRead: (senderId) => {
+    const socket = useAuthStore.getState().socket;
+    const { authUser } = useAuthStore.getState();
+    const {unreadMessages} = get();
+
+    if (socket && authUser) {
+      socket.emit("markMessagesAsRead", {
+        userId: authUser._id,
+        senderId: senderId,
+      });
+     
+
+      set((state) => ({
+        unreadMessages: {
+          ...state.unreadMessages,
+          [senderId]: 0,
+        },
+      }));
+    }
+   
   },
 
   // Unsubscribe from socket events
@@ -159,28 +174,6 @@ export const useChatStore = create((set, get) => ({
     set({ selectedUser: user });
   },
 
-  // Mark messages as read
-  markMessagesAsRead: (senderId) => {
-    const socket = useAuthStore.getState().socket;
-    const { authUser } = useAuthStore.getState();
-    const {unreadMessages} = get();
-
-    if (socket && authUser) {
-      socket.emit("markMessagesAsRead", {
-        senderId,
-        userId: authUser._id,
-      });
-     
-
-      set((state) => ({
-        unreadMessages: {
-          ...state.unreadMessages,
-          [senderId]: 0,
-        },
-      }));
-    }
-    console.log("unreadMessages",unreadMessages[senderId]);
-  },
 
   calculateTotalUnread: () => {
     const { unreadMessages } = get();

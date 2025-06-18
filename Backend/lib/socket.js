@@ -1,8 +1,7 @@
 import {Server} from "socket.io";
 import http from "http";
 import express from "express";
-import UnreadMessage from "../models/UnreadMessage.model.js";
-
+import UnreadMessage from "../models/unreadMessage.model.js";
 const app = express();
 const server = http.createServer(app);
 
@@ -25,6 +24,7 @@ io.on("connection", (socket) => {
     console.log("User connected: ", socket.id);
 
     const userId = socket.handshake.query.userId;
+
     if (userId) {
         userSocketMap[userId] = socket.id;
     }
@@ -33,21 +33,13 @@ io.on("connection", (socket) => {
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
     // Handle marking messages as read
-    socket.on("markMessagesAsRead", async ({ senderId }) => {
+    socket.on("markMessagesAsRead", async ({ senderId, userId }) => {
         try {
             await UnreadMessage.findOneAndUpdate(
-                { userId: socket.handshake.query.userId, senderId },
+                { userId, senderId },
                 { count: 0 }
             );
             
-            // Notify all devices of this user
-            const receiverSocketId = getReceiverSocketId(socket.handshake.query.userId);
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit("unreadUpdate", {
-                    senderId,
-                    count: 0
-                });
-            }
         } catch (error) {
             console.error("Error marking messages as read:", error);
         }

@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
-import UnreadMessage from "../models/UnreadMessage.model.js";
+import UnreadMessage from "../models/unreadMessage.model.js";
 import UserInteraction from "../models/userInteraction.model.js";
 import { getReceiverSocketId, io } from "../lib/socket.js";
 
@@ -79,14 +79,14 @@ export const getMessages = async (req, res) => {
             { upsert: true }
         );
 
-        // Notify client of read status
-        const receiverSocketId = getReceiverSocketId(myId);
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("unreadUpdate", {
-                senderId: userToChatId,
-                count: 0
-            });
-        }
+        // // Notify client of read status
+        // const receiverSocketId = getReceiverSocketId(myId);
+        // if (receiverSocketId) {
+        //     io.to(receiverSocketId).emit("unreadUpdate", {
+        //         senderId: userToChatId,
+        //         count: 0
+        //     });
+        // }
 
         res.status(200).json(messages);
     } catch (err) {
