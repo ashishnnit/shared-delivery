@@ -89,8 +89,6 @@ export const useChatStore = create((set, get) => ({
 
   // Subscribe to new messages and unread updates
   subscribeToNewMessages: () => {
-
-    console.log("subscribing to new messages");
     
     const { selectedUser,markMessagesAsRead,unreadMessages,getUsers } = get();
     const { authUser } = useAuthStore.getState();
