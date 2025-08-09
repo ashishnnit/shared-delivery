@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const BASE_URL = "http://localhost:5002";
+const BASE_URL = backendUrl;
 
 export const usePostStore = create((set, get) => ({
   posts: [],
