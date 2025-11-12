@@ -3,37 +3,37 @@ import SibApiV3Sdk from "sib-api-v3-sdk";
 import dotenv from "dotenv";
 dotenv.config(); // Load environment variables
 
-// export const generateToken=(userId,res)=>{
+export const generateToken=(userId,res)=>{
     
-//     const token=jwt.sign({userId},process.env.JWT_SECRET,{expiresIn:"7d"});
+    const token=jwt.sign({userId},process.env.JWT_SECRET,{expiresIn:"7d"});
 
-//     res.cookie("jwt",token,{
-//         maxAge:7*24*60*60*1000,
-//         httpOnly:true,
-//         sameSite:"strict",
-//         secure:process.env.NODE_ENV!=="development",
-//     });
+    res.cookie("jwt",token,{
+        maxAge:7*24*60*60*1000,
+        httpOnly:true,
+        sameSite:"strict",
+        secure:process.env.NODE_ENV!=="development",
+    });
 
-//     return token;
-// }
+    return token;
+}
 
 
-export const generateToken = (userId, res) => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+// export const generateToken = (userId, res) => {
+//   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-  const cookieOptions = {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // must be true in production (HTTPS)
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site in prod
-    path: "/",
-  };
+//   const cookieOptions = {
+//     maxAge: 7 * 24 * 60 * 60 * 1000,
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production", // must be true in production (HTTPS)
+//     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site in prod
+//     path: "/",
+//   };
 
-  console.log("generateToken -> setting cookie with options:", cookieOptions);
-  res.cookie("jwt", token, cookieOptions);
+//   console.log("generateToken -> setting cookie with options:", cookieOptions);
+//   res.cookie("jwt", token, cookieOptions);
 
-  return token;
-};
+//   return token;
+// };
 
 
 
