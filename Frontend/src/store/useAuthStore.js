@@ -3,9 +3,8 @@ import {axiosInstance} from "../lib/axios.js";
 import toast from "react-hot-toast";
 import {io} from "socket.io-client";
 import {useChatStore} from "./useChatStore.js";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const BASE_URL=backendUrl;
+const BASE_URL = import.meta.env.MODE === "development" ? 'http://localhost:5002' : '/';
 
 export const useAuthStore = create((set,get) => ({
     authUser:null,
